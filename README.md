@@ -52,6 +52,40 @@
 }
 ```
 
+### 단일 도구 호출 (tool_0003) — get_weather
+
+```json
+{
+  "sample_id": "tool_0003",
+  "user_query": "서울 내일 날씨 알려줘.",
+  "artifacts": {
+    "tools": [{
+      "name": "get_weather",
+      "description": "지정한 도시의 날씨 정보를 반환한다.",
+      "schema": {"type": "object", "properties": {"city": {"type": "string"}, "date": {"type": "string"}}}
+    }]
+  },
+  "gold": {
+    "tool_calls": [{"name": "get_weather", "arguments": {"city": "서울", "date": "내일"}}]
+  }
+}
+```
+
+### 다중 도구 연속 호출 (tool_0004) — search_wiki + summarize_text 체이닝
+
+```json
+{
+  "sample_id": "tool_0004",
+  "user_query": "양자컴퓨팅에 대해 위키백과에서 검색하고 그 내용을 요약해줘.",
+  "gold": {
+    "tool_calls": [
+      {"name": "search_wiki", "arguments": {"query": "양자컴퓨팅"}},
+      {"name": "summarize_text", "arguments": {"text": "<SEARCH_RESULT>"}}
+    ]
+  }
+}
+```
+
 ## 모델 출력 형식
 
 ```json
@@ -70,7 +104,7 @@ Tool-Call/
 ├── pyproject.toml
 ├── eval/
 │   ├── internal/
-│   │   └── v0.jsonl        # 평가 데이터셋 (2샘플: 단일 + 다중 호출)
+│   │   └── v0.jsonl        # 평가 데이터셋 (4샘플: 단일 + 다중 + 단일 + 체이닝)
 │   └── results/            # 모델별 결과
 ├── tests/
 │   └── test_eval.py
